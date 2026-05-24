@@ -1,6 +1,6 @@
-# VI__dev__X
+# VI*dev*X
 
-**VIdevX Platform** for **developers** *experience exchange*
+**VI*dev*X Platform** for **developers** *experience exchange*
 
 # React + TypeScript + Vite
 
