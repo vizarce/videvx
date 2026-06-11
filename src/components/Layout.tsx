@@ -1,7 +1,7 @@
 // src/components/Layout.tsx
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Code2, Moon, Sun, Terminal, PlusSquare, LogOut } from 'lucide-react';
+import { Moon, Sun, Terminal, LogOut } from 'lucide-react';
 import { useTheme } from './theme-provider';
 
 export default function Layout({ children }: { children: React.ReactNode }) {
