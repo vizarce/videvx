@@ -39,7 +39,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             ) : (
               <Link to="/login">
                 <button className="bg-cyan-500 px-4 py-2 rounded-lg font-mono text-sm hover:bg-cyan-600 transition shadow-lg shadow-cyan-500/30">
-                  Вхід / GitHub
+                  Вхід
                 </button>
               </Link>
             )}

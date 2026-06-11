@@ -22,7 +22,8 @@ import type { Extension } from '@codemirror/state';
 
 interface LangConfig {
   label: string;
-  pistonLang: string;
+  runtimeLabel: string;
+  judge0Id: number;
   extension: () => Extension;
   defaultCode: string;
   fileExt: string;
@@ -31,7 +32,8 @@ interface LangConfig {
 const LANGUAGES: Record<string, LangConfig> = {
   javascript: {
     label: 'JavaScript',
-    pistonLang: 'javascript',
+    runtimeLabel: 'Node.js 22',
+    judge0Id: 102,
     extension: () => javascript(),
     fileExt: 'js',
     defaultCode: `// JavaScript — VIdevX Sandbox
@@ -48,7 +50,8 @@ console.log('Fib(10):', fib(10));`,
   },
   typescript: {
     label: 'TypeScript',
-    pistonLang: 'typescript',
+    runtimeLabel: 'TypeScript 5.6',
+    judge0Id: 101,
     extension: () => javascript({ typescript: true }),
     fileExt: 'ts',
     defaultCode: `// TypeScript — VIdevX Sandbox
@@ -65,7 +68,8 @@ console.log(greet(user));`,
   },
   python: {
     label: 'Python',
-    pistonLang: 'python',
+    runtimeLabel: 'Python 3.13',
+    judge0Id: 109,
     extension: () => python(),
     fileExt: 'py',
     defaultCode: `# Python — VIdevX Sandbox
@@ -80,7 +84,8 @@ for i in range(10):
   },
   java: {
     label: 'Java',
-    pistonLang: 'java',
+    runtimeLabel: 'JDK 17',
+    judge0Id: 91,
     extension: () => java(),
     fileExt: 'java',
     defaultCode: `// Java — VIdevX Sandbox
@@ -100,7 +105,8 @@ public class Main {
   },
   c: {
     label: 'C',
-    pistonLang: 'c',
+    runtimeLabel: 'GCC 14',
+    judge0Id: 103,
     extension: () => cpp(),
     fileExt: 'c',
     defaultCode: `// C — VIdevX Sandbox
@@ -121,7 +127,8 @@ int main() {
   },
   cpp: {
     label: 'C++',
-    pistonLang: 'c++',
+    runtimeLabel: 'G++ 14',
+    judge0Id: 105,
     extension: () => cpp(),
     fileExt: 'cpp',
     defaultCode: `// C++ — VIdevX Sandbox
@@ -143,7 +150,8 @@ int main() {
   },
   go: {
     label: 'Go',
-    pistonLang: 'go',
+    runtimeLabel: 'Go 1.23',
+    judge0Id: 107,
     extension: () => StreamLanguage.define(go),
     fileExt: 'go',
     defaultCode: `// Go — VIdevX Sandbox
@@ -167,7 +175,8 @@ func main() {
   },
   rust: {
     label: 'Rust',
-    pistonLang: 'rust',
+    runtimeLabel: 'Rust 1.85',
+    judge0Id: 108,
     extension: () => rust(),
     fileExt: 'rs',
     defaultCode: `// Rust — VIdevX Sandbox
@@ -187,7 +196,8 @@ fn main() {
   },
   php: {
     label: 'PHP',
-    pistonLang: 'php',
+    runtimeLabel: 'PHP 8.3',
+    judge0Id: 98,
     extension: () => php(),
     fileExt: 'php',
     defaultCode: `<?php
@@ -204,7 +214,8 @@ for ($i = 0; $i < 10; $i++) {
   },
   ruby: {
     label: 'Ruby',
-    pistonLang: 'ruby',
+    runtimeLabel: 'Ruby 2.7',
+    judge0Id: 72,
     extension: () => StreamLanguage.define(ruby),
     fileExt: 'rb',
     defaultCode: `# Ruby — VIdevX Sandbox
@@ -218,7 +229,8 @@ puts "Hello from VIdevX!"
   },
   csharp: {
     label: 'C#',
-    pistonLang: 'csharp',
+    runtimeLabel: 'Mono 6.6',
+    judge0Id: 51,
     extension: () => StreamLanguage.define(csharp),
     fileExt: 'cs',
     defaultCode: `// C# — VIdevX Sandbox
@@ -240,7 +252,8 @@ class Program {
   },
   bash: {
     label: 'Bash',
-    pistonLang: 'bash',
+    runtimeLabel: 'Bash 5',
+    judge0Id: 46,
     extension: () => StreamLanguage.define(shell),
     fileExt: 'sh',
     defaultCode: `#!/bin/bash
@@ -261,7 +274,8 @@ done`,
   },
   lua: {
     label: 'Lua',
-    pistonLang: 'lua',
+    runtimeLabel: 'Lua 5.3',
+    judge0Id: 64,
     extension: () => StreamLanguage.define(lua),
     fileExt: 'lua',
     defaultCode: `-- Lua — VIdevX Sandbox
@@ -277,7 +291,8 @@ end`,
   },
   r: {
     label: 'R',
-    pistonLang: 'r',
+    runtimeLabel: 'R 4.4',
+    judge0Id: 99,
     extension: () => StreamLanguage.define(r),
     fileExt: 'r',
     defaultCode: `# R — VIdevX Sandbox
@@ -293,7 +308,8 @@ for (i in 0:9) {
   },
   kotlin: {
     label: 'Kotlin',
-    pistonLang: 'kotlin',
+    runtimeLabel: 'Kotlin 2.1',
+    judge0Id: 111,
     extension: () => StreamLanguage.define(kotlin),
     fileExt: 'kt',
     defaultCode: `// Kotlin — VIdevX Sandbox
@@ -311,7 +327,8 @@ fun main() {
   },
   sql: {
     label: 'SQL',
-    pistonLang: 'sqlite3',
+    runtimeLabel: 'SQLite 3.27',
+    judge0Id: 82,
     extension: () => sql(),
     fileExt: 'sql',
     defaultCode: `-- SQL — VIdevX Sandbox
@@ -334,6 +351,7 @@ const LANG_GROUPS = [
 ];
 
 export default function Sandbox() {
+  const sandboxApiUrl = import.meta.env.VITE_SANDBOX_API_URL ?? 'https://ce.judge0.com';
   const [langKey, setLangKey] = useState('javascript');
   const [code, setCode] = useState(LANGUAGES.javascript.defaultCode);
   const [stdin, setStdin] = useState('');
@@ -342,6 +360,7 @@ export default function Sandbox() {
   const [running, setRunning] = useState(false);
   const [exitCode, setExitCode] = useState<number | null>(null);
   const [elapsed, setElapsed] = useState<number | null>(null);
+  const [statusText, setStatusText] = useState<string | null>(null);
 
   const handleLangChange = useCallback((key: string) => {
     setLangKey(key);
@@ -350,6 +369,7 @@ export default function Sandbox() {
     setStderr('');
     setExitCode(null);
     setElapsed(null);
+    setStatusText(null);
   }, []);
 
   const runCode = async () => {
@@ -358,30 +378,38 @@ export default function Sandbox() {
     setStderr('');
     setExitCode(null);
     setElapsed(null);
+    setStatusText(null);
     const lang = LANGUAGES[langKey];
     const start = Date.now();
     try {
-      const res = await fetch('https://emkc.org/api/v2/piston/execute', {
+      const res = await fetch(`${sandboxApiUrl}/submissions?base64_encoded=false&wait=true`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          language: lang.pistonLang,
-          version: '*',
-          files: [{ name: `main.${lang.fileExt}`, content: code }],
+          language_id: lang.judge0Id,
+          source_code: code,
           stdin: stdin || undefined,
         }),
       });
       if (!res.ok) {
-        setOutput(`HTTP ${res.status}: ${res.statusText}`);
+        let details = '';
+        try {
+          const errorData = await res.json();
+          details = errorData.message ? `\n${errorData.message}` : '';
+        } catch {
+          // Fall back to the HTTP status when the backend does not return JSON.
+        }
+        setOutput(`HTTP ${res.status}: ${res.statusText}${details}`);
         return;
       }
       const data = await res.json();
       setElapsed(Date.now() - start);
-      setOutput(data.run?.stdout ?? data.run?.output ?? data.message ?? '');
-      setStderr(data.run?.stderr ?? '');
-      setExitCode(data.run?.code ?? null);
+      setOutput(data.stdout ?? data.message ?? '');
+      setStderr([data.compile_output, data.stderr].filter(Boolean).join('\n'));
+      setExitCode(typeof data.exit_code === 'number' ? data.exit_code : data.status?.id === 3 ? 0 : null);
+      setStatusText(data.status?.description ?? null);
     } catch {
-      setOutput('Помилка з\'єднання з Piston API. Перевірте мережу.');
+      setOutput('Помилка з\'єднання з Sandbox API. Перевірте мережу або VITE_SANDBOX_API_URL.');
     } finally {
       setRunning(false);
     }
@@ -397,7 +425,7 @@ export default function Sandbox() {
         <h1 className="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
           Пісочниця
         </h1>
-        <span className="text-xs font-mono text-white/40 ml-auto">Powered by Piston API</span>
+        <span className="text-xs font-mono text-white/40 ml-auto">Powered by Judge0 CE</span>
       </div>
 
       {/* Language selector */}
@@ -478,9 +506,11 @@ export default function Sandbox() {
         <div className="space-y-3">
           <div className="flex items-center justify-between">
             <span className="text-xs font-mono text-white/50">Вивід</span>
-            {exitCode !== null && (
+            {(exitCode !== null || statusText) && (
               <span className={`text-xs font-mono px-2 py-0.5 rounded ${exitCode === 0 ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}`}>
-                exit {exitCode}{elapsed !== null ? ` · ${elapsed}ms` : ''}
+                {exitCode !== null ? `exit ${exitCode}` : statusText}
+                {statusText && exitCode !== null ? ` · ${statusText}` : ''}
+                {elapsed !== null ? ` · ${elapsed}ms` : ''}
               </span>
             )}
           </div>
@@ -512,8 +542,8 @@ export default function Sandbox() {
 
           {/* Info panel */}
           <div className="backdrop-blur-md bg-white/5 border border-white/10 rounded-lg p-3 text-xs font-mono text-white/40 space-y-1">
-            <div>🔧 Runtime: <span className="text-white/60">{lang.pistonLang}</span></div>
-            <div>🌐 API: <span className="text-white/60">emkc.org/api/v2/piston</span></div>
+            <div>🔧 Runtime: <span className="text-white/60">{lang.runtimeLabel}</span></div>
+            <div>🌐 API: <span className="text-white/60">{sandboxApiUrl}</span></div>
             <div>📝 Підтримувані мови: <span className="text-white/60">JavaScript, TypeScript, Python, Java, C, C++, Go, Rust, PHP, Ruby, C#, Bash, Lua, R, Kotlin, SQL</span></div>
           </div>
         </div>

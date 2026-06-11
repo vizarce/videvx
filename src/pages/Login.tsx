@@ -1,9 +1,9 @@
 // src/pages/Login.tsx
 import { useAuth } from '../context/AuthContext';
-import { SiGithub } from 'react-icons/si';
+import { SiGithub, SiGoogle } from 'react-icons/si';
 
 export default function Login() {
-  const { signInWithGitHub } = useAuth();
+  const { signInWithGoogle, signInWithGitHub } = useAuth();
 
   return (
     <div className="flex justify-center items-center h-[70vh]">
@@ -11,12 +11,20 @@ export default function Login() {
         <h1 className="text-4xl font-bold mb-6 bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
           Ласкаво просимо до VIdevX
         </h1>
-        <button
-          onClick={signInWithGitHub}
-          className="flex items-center gap-3 bg-gray-800 hover:bg-gray-700 text-white px-6 py-3 rounded-lg text-lg font-mono transition"
-        >
-          <SiGithub size={20} /> Увійти через GitHub
-        </button>
+        <div className="space-y-3">
+          <button
+            onClick={signInWithGoogle}
+            className="flex w-full items-center justify-center gap-3 bg-white text-slate-900 px-6 py-3 rounded-lg text-lg font-mono transition hover:bg-slate-100"
+          >
+            <SiGoogle size={20} /> Увійти через Google
+          </button>
+          <button
+            onClick={signInWithGitHub}
+            className="flex w-full items-center justify-center gap-3 bg-gray-800 hover:bg-gray-700 text-white px-6 py-3 rounded-lg text-lg font-mono transition"
+          >
+            <SiGithub size={20} /> Увійти через GitHub
+          </button>
+        </div>
         <p className="mt-4 text-sm text-white/50">Після входу ви зможете публікувати код, статті та тестувати в пісочниці.</p>
       </div>
     </div>
